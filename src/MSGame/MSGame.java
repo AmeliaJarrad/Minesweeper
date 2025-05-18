@@ -2,6 +2,10 @@ package MSGame;
 
 import java.util.Random;
 import Util.Colours;
+import Util.Animations;
+
+//hard coding in the vals for row, cols and mines for this project
+
 
 public class MSGame {
     public int rows = 10;
@@ -24,12 +28,11 @@ public MSGame() {
         placeMines();
     }
     
-//loads the game board with empty cells as "-"
+//loads the game board with empty cells 
 
     private void loadBoard() {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                board[i][j] = '-';
                 guessed[i][j] = false;
                 
             }
@@ -50,12 +53,21 @@ public MSGame() {
         }
     }
 
-    // Check if a cell is a valid cell on the game board
+    /*  Check if a cell is a valid cell on the game board , makes sure its not
+     * a negative, that it's within the boards height, that the column isn't
+     * a negative, and that the col index is within the boards width
+    */
     public boolean isValidCell(int row, int col) {
         return row >= 0 && row < rows && col >= 0 && col < cols;
     }
 
-    // Count the number of adjacent mines to a given cell
+    /* Count the number of adjacent mines to a given cell 
+     * Stats with a counter, then we do a loop that checks in a 3 X 3 grid around
+     * the guessed cell, int i is checking rows (one above and one below) while
+     * j is checking the column (one above and one below). We check that the cell
+     * is valid and within bounds and if there's a mine in next cell over, if there
+     * is we count ++, then return the result of count
+     */
     private int countAdjacentMines(int row, int col) {
         int count = 0;
         for (int i = row - 1; i <= row + 1; i++) {
@@ -68,7 +80,7 @@ public MSGame() {
         return count;
     }
 
-     // Reveal a cell and update the game state
+     // Reveal a cell and update the game state, subtracting from remainingCells
     public void revealCell(int row, int col) {
         if (isValidCell(row, col) && !guessed[row][col]) {
             guessed[row][col] = true;
@@ -93,20 +105,21 @@ public MSGame() {
        
             if (board[row][col] == '*') {
                 gameOver = true;
-
-                
-                System.out.println(Colours.RED + "BOOM! Bad Luck! Game Over!" + Colours.RESET);
+                Animations.playGameOverAnimation();
                 revealAllMines();
+
             } else {
                 revealCell(row, col);
                 if (remainingCells == 0) {
-                System.out.println("Congratulations! You Won!");
+                Animations.playWinAnimation();
                 revealAllMines();
+            
             } else {
-            printBoard();
+                printBoard();
             }
-        }    
-    }
+        }
+    }   
+    
     // Reveal all the remaining mines on the game board
     private void revealAllMines() {
         for (int i = 0; i < rows; i++) {
@@ -121,10 +134,10 @@ public MSGame() {
     }
 
     public void printBoard() {
-        System.out.println("Remaining cells: " + remainingCells);
+        System.out.println(Colours.GREY +"Remaining cells: " + Colours.RESET + Colours.BOLD + remainingCells + Colours.RESET);
         System.out.println();
 
-        // Print column headers
+        // Print column headers in Cyan
         System.out.print("    ");
         for (int i = 0; i < cols; i++) {
             System.out.print(Colours.CYAN + i + "   " + Colours.RESET);
@@ -140,7 +153,7 @@ public MSGame() {
 
 
         for (int i = 0; i < rows; i++) {
-            // Print row number and row content
+            // Print row number and row content in Purple
             System.out.print(Colours.PURPLE + i + Colours.RESET + " |");
 
             for (int j = 0; j < cols; j++) {
@@ -150,6 +163,7 @@ public MSGame() {
 
                     if (cell == '*') {
                         display = Colours.RED + cell + Colours.RESET;
+        // Apparently these are the standard colours for numbers of bombs in minesweeper? 
                     } else if (Character.isDigit(cell) && cell != '0') {
                         switch (cell) {
                             case '1': display = Colours.BLUE + cell + Colours.RESET; break;

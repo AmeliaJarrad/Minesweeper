@@ -1,10 +1,14 @@
 import java.util.Scanner;
 import MSGame.MSGame;
 import Util.Colours;
+// import Util.Animations;
 
 
 public class App {
     public static void main(String[] args) throws Exception {
+
+        // Util.Animations.playWinAnimation(); - just had this here for testing
+
         Scanner s = new Scanner(System.in);
 
         System.out.println(Colours.BOLD + Colours.YELLOW +"Welcome to a MineSweeper Game" + Colours.RESET);
